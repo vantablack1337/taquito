@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { ec, curve } from 'elliptic';
 import { Hard, ExtendedPrivateKey } from './index';
-import { HMAC } from '@stablelib/hmac';
-import { SHA512 } from '@stablelib/sha512';
+import crypto from 'react-native-quick-crypto';
 import BN from 'bn.js';
 import { parseHex } from './utils';
 import { InvalidBitSize, InvalidCurveError, InvalidSeedLengthError } from '../errors';
@@ -63,7 +62,7 @@ export class PrivateKey implements ExtendedPrivateKey {
     let chain: Uint8Array = new Uint8Array();
     let i = 0;
     while (i === 0) {
-      const sum = new HMAC(SHA512, key).update(seed).digest();
+      const sum = crypto.Hmac('sha512', key).update(seed).digest();
       d = new BN(sum.subarray(0, 32));
       chain = sum.subarray(32);
       if (d.isZero() || d.cmp(c.n as BN) >= 0) {
@@ -96,7 +95,7 @@ export class PrivateKey implements ExtendedPrivateKey {
     let chain: Uint8Array = new Uint8Array();
     let i = 0;
     while (i === 0) {
-      const sum = new HMAC(SHA512, this.chainCode).update(data).digest();
+      const sum = crypto.Hmac("sha512", this.chainCode).update(data).digest();
       d = new BN(sum.subarray(0, 32));
       chain = sum.subarray(32);
       if (this.keyPair.ec.n && d.cmp(this.keyPair.ec.n as BN) < 0) {

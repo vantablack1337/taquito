@@ -16,7 +16,7 @@ import {
 import toBuffer from 'typedarray-to-buffer';
 import { Tz1 } from './ed-key';
 import { Tz2, ECKey, Tz3 } from './ec-key';
-import pbkdf2 from 'pbkdf2';
+import pbkdf2 from 'react-native-quick-crypto';
 import * as Bip39 from 'bip39';
 import { Curves, generateSecretKey } from './helpers';
 import { InvalidMnemonicError, InvalidPassphraseError } from './errors';
@@ -104,7 +104,7 @@ export class InMemorySigner {
       decrypt = (constructedKey: Uint8Array) => {
         const salt = toBuffer(constructedKey.slice(0, 8));
         const encryptedSk = constructedKey.slice(8);
-        const encryptionKey = pbkdf2.pbkdf2Sync(passphrase, salt, 32768, 32, 'sha512');
+        const encryptionKey = pbkdf2.pbkdf2Sync(passphrase, salt, 32768, 32, 'SHA-512');
 
         return openSecretBox(
           new Uint8Array(encryptionKey),
